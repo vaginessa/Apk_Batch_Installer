@@ -56,6 +56,7 @@ public class Apkinstaller extends JFrame {
 	JList listApk;
 	JFileChooser filechooser;
 	int p=0;
+	int flag;
 	
 	
 	//int num;
@@ -67,16 +68,14 @@ public class Apkinstaller extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Apkinstaller frame = new Apkinstaller();
+					Apkinstaller frame = new Apkinstaller();	
+					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+					
 					frame.setTitle("Apk Batch Installer");
 					frame.setVisible(true);
-					//frame.setResizable(false);
-					
+					frame.setResizable(false);
 					frame.setIconImage(ImageIO.read(new File("res/icon1.png")));
-					
-							
-					
-					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -123,62 +122,98 @@ public class Apkinstaller extends JFrame {
             }   // end filesDropped
         }); // end FileDrop.Listener
         
-
+        //Install Button
         btnNewButton = new JButton("Install");
         btnNewButton.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent arg0) {
         		
         		System.out.println("\n Debug");
-        		String command = "adb install -r";
         		
         		progressBar.setIndeterminate(false);
         		progressBar.setMinimum(0);
         		progressBar.setMaximum(100);
         		progressBar.setVisible(true);
         		
+        		
+        		
+                // We're going to do something that takes a long time, so we
+                // spin off a thread and update the display when we're done.
+                Thread worker = new Thread() {
+                  public void run() {
+                    // Something that takes a long time . . . in real life,
+                    // this
+                    // might be a DB query, remote method invocation, etc.
+                    try {
+                    	
+                    	progressBar.setIndeterminate(true);
+                    	
+                    	//Dummy
+                	    for (Iterator iterator = arrayList.iterator(); iterator.hasNext();) {
+        					String string = (String) iterator.next();
+        					System.out.println(string);
+        					
+
+        					try {
+        						
+        						ProcessBuilder pb = new ProcessBuilder("adb", "install","-r",string);
+        						Process pc = null;
+        						
+        						pc = pb.start();
+        						
+        						
+        						InputStream s = pc.getInputStream();
+        						
+        						BufferedReader in = new BufferedReader(new InputStreamReader(s));
+        						
+        						String temp;
+        						
+        						
+        						
+                                //While 
+        		        		while ((temp = in.readLine()) != null) {
+        		        			
+        		        		    System.out.println(temp);
+        		        		    textCommandStatus.append(temp+"\n");;
+        						
+        						    int exitvalue=pc.waitFor();
+        						
+        						    System.out.println(exitvalue);
+        					        System.out.println("Done");
+        					        
+        					        				        
+        					     }
+        		        		//While end
+        					   }catch (IOException | InterruptedException e) {
+        						// TODO Auto-generated catch block
+        						e.printStackTrace();
+        					}
+        		        }
+                	   flag=1;
+                      Thread.sleep(5000);
+                    } catch (InterruptedException ex) {
+                    }
+                    
+                    
+                       
+                    // Report the result using invokeLater().
+                    SwingUtilities.invokeLater(new Runnable() {
+                      public void run() {
+                    	  
+                       textCommandStatus.repaint();
+                       progressBar.repaint();
+                       
+                       if(flag==1)
+                       {
+                    	   progressBar.setIndeterminate(false);
+                       }
                
+                      }
+                    });
+                  }
+                };
+
+              worker.start(); // So we don't hold up the dispatch thread.
         		
-
-        		
-            	 //Dummy
-        	    for (Iterator iterator = arrayList.iterator(); iterator.hasNext();) {
-					String string = (String) iterator.next();
-					System.out.println(string);
-
-					try {
-						
-						ProcessBuilder pb = new ProcessBuilder("adb", "install","-r",string);
-						Process pc = null;
-						
-						pc = pb.start();
-						
-						InputStream s = pc.getInputStream();
-						
-						BufferedReader in = new BufferedReader(new InputStreamReader(s));
-						
-						String temp;
-						
-						
-
-		        		while ((temp = in.readLine()) != null) {
-		        			
-		        		    System.out.println(temp);
-		        		    textCommandStatus.append(temp+"\n");;
- 		        		    p=p+10;
-						
-						    int exitvalue=pc.waitFor();
-						
-						    System.out.println(exitvalue);
-					        System.out.println("Done");
-					     }
-					   }catch (IOException | InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					
-					progressBar.setValue(100);
-				
-				}
         		
         	}
         });
@@ -212,24 +247,14 @@ public class Apkinstaller extends JFrame {
 	        		while ((temp = in.readLine()) != null) {
 	        			
 	        		    System.out.println(temp);
-	        		    textCommandStatus.append(temp+"\n");     		    
+	        		    textCommandStatus.append(temp+"\n");   
 	        		}
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				
-				int input=JOptionPane.showConfirmDialog(null, "Check if there is phone code after list of devices attached");
-				
-				if(input==0)
-				{
-					JOptionPane.showMessageDialog(null, "Phone is connected");
-				}
-				else
-				{
-					JOptionPane.showMessageDialog(null," Connect your phone through ADB or Install ADB ");
-				}
-				System.out.println(input);
+			
 				
         	}
         });//Check button end
@@ -325,6 +350,8 @@ public class Apkinstaller extends JFrame {
         	        else {
         	            System.out.println("File access cancelled by user.");
         	        } 
+        		 
+        	
         		 listApk.setListData(arrayList);
         		 listApk.repaint();
 
@@ -333,4 +360,6 @@ public class Apkinstaller extends JFrame {
         btnNewButton_1.setBounds(230, 287, 109, 17);
         contentPane.add(btnNewButton_1);
 	}
+	
+	
 }
