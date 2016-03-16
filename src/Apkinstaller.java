@@ -74,7 +74,8 @@ public class Apkinstaller extends JFrame {
 					frame.setTitle("Apk Batch Installer");
 					frame.setVisible(true);
 					frame.setResizable(false);
-					frame.setIconImage(ImageIO.read(new File("res/icon1.png")));
+					
+					
 			
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -103,6 +104,7 @@ public class Apkinstaller extends JFrame {
         contentPane.add(lblDragAndDrop);
         
         JProgressBar progressBar = new JProgressBar(0,100);
+        progressBar.setForeground(Color.DARK_GRAY);
         progressBar.setBounds(10, 315, 770, 14);
         contentPane.add(progressBar);
         
@@ -260,7 +262,7 @@ public class Apkinstaller extends JFrame {
         });//Check button end
         
         
-        btnDeviceCheck.setBounds(663, 41, 117, 23);
+        btnDeviceCheck.setBounds(514, 41, 117, 23);
         contentPane.add(btnDeviceCheck);
         
         JScrollPane scrollPane_1 = new JScrollPane();
@@ -359,7 +361,15 @@ public class Apkinstaller extends JFrame {
         });
         btnNewButton_1.setBounds(230, 287, 109, 17);
         contentPane.add(btnNewButton_1);
+        
+        JButton btnAboutMe = new JButton("About Me");
+        btnAboutMe.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent arg0) {
+        		
+        		JOptionPane.showMessageDialog(null, "APK BATCH INSTALLER"+"\nDevloped by"+"\nAniket Patil"+"\naniketp563@gmail.com");
+        	}
+        });
+        btnAboutMe.setBounds(671, 41, 109, 23);
+        contentPane.add(btnAboutMe);
 	}
-	
-	
 }
