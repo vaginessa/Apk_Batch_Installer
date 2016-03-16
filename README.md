@@ -1,6 +1,7 @@
 # Apk Batch Installer
 
 Requirements :
+
 1. JAVA 
 2. ADB
 3. Phone Drivers and ADB should be turned on in devloper options
