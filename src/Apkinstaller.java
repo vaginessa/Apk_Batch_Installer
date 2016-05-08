@@ -65,6 +65,7 @@ public class Apkinstaller extends JFrame {
 	JList listApk;
 	JFileChooser filechooser;
 	JLabel lblStatus;
+	JButton btnUSB;
 	int p=0;
 	int flag;
 	
@@ -100,7 +101,7 @@ public class Apkinstaller extends JFrame {
 	
 	public Apkinstaller() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 962, 481);
+		setBounds(100, 100, 962, 467);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -108,7 +109,7 @@ public class Apkinstaller extends JFrame {
         
         JProgressBar progressBar = new JProgressBar(0,100);
         progressBar.setForeground(Color.DARK_GRAY);
-        progressBar.setBounds(10, 411, 926, 23);
+        progressBar.setBounds(10, 412, 926, 23);
         contentPane.add(progressBar);
         
         
@@ -157,6 +158,7 @@ public class Apkinstaller extends JFrame {
                     try {
                     	
                     	progressBar.setIndeterminate(true);
+                    	ProcessBuilder pb = new ProcessBuilder();
                     	
                     	//Dummy
                 	    for (Iterator iterator = arrayList.iterator(); iterator.hasNext();) {
@@ -165,8 +167,7 @@ public class Apkinstaller extends JFrame {
         					
 
         					try {
-        						
-        						ProcessBuilder pb = new ProcessBuilder("adb", "install","-r",string);
+        						pb.command("adb", "install","-r",string);
         						Process pc = null;
         						
         						pc = pb.start();
@@ -261,6 +262,10 @@ public class Apkinstaller extends JFrame {
         btnDeviceCheck.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent arg0) {
         		
+        		//Solve OSX Space issue
+        		textCommandStatus.append("\n");
+        		
+        		
         		 // We're going to do something that takes a long time, so we
                 // spin off a thread and update the display when we're done.
                 Thread work = new Thread() {
@@ -286,7 +291,7 @@ public class Apkinstaller extends JFrame {
 	        		while ((temp = in.readLine()) != null) {
 	        			
 	        		    System.out.println(temp);
-	        		    textCommandStatus.append(temp+"\n");   
+	        		    textCommandStatus.append("\n"+temp+"\n");   
 	        		}
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
@@ -307,7 +312,7 @@ public class Apkinstaller extends JFrame {
 					
 					String temp;
 					
-					textCommandStatus.append("\n Brand : ");
+					textCommandStatus.append("Brand : ");
 
 	        		while ((temp = in.readLine()) != null) {
 	        			
@@ -441,7 +446,7 @@ public class Apkinstaller extends JFrame {
         	}
         });
         
-        btnAboutMe.setBounds(790, 352, 146, 30);
+        btnAboutMe.setBounds(790, 370, 146, 30);
         contentPane.add(btnAboutMe);
         
         JLabel lblDragAndDrop = new JLabel("Drag and Drop APK Here");
@@ -538,7 +543,7 @@ public class Apkinstaller extends JFrame {
         });
         
         
-        btnFlashKernel.setBounds(790, 317, 146, 30);
+        btnFlashKernel.setBounds(790, 286, 146, 30);
         btnFlashKernel.setFocusable(false);
         contentPane.add(btnFlashKernel);
         
@@ -576,6 +581,7 @@ public class Apkinstaller extends JFrame {
                     try {
                     	
                     	progressBar.setIndeterminate(true);
+                    	textCommandStatus.append("\n <------ Pushing Files ------> \n");
                     	
                     	//Dummy
                 	    for (Iterator iterator = arrayList.iterator(); iterator.hasNext();) {
@@ -589,6 +595,8 @@ public class Apkinstaller extends JFrame {
         						Process pc = null;
         						
         						pc = pb.start();
+        						
+        						textCommandStatus.append(string);
         						
         						
         						InputStream sp = pc.getInputStream();
@@ -617,10 +625,11 @@ public class Apkinstaller extends JFrame {
         						e.printStackTrace();
         					}
         					
-        					JOptionPane.showMessageDialog(null," File placed on root of internal storage ");
+        					
         		        }
+                	   JOptionPane.showMessageDialog(null," File placed on root of internal storage ");
                 	   flag=1;
-                      Thread.sleep(0);
+                      Thread.sleep(1000);
                     } catch (InterruptedException ex) {
                     }
                     
@@ -735,12 +744,12 @@ public class Apkinstaller extends JFrame {
         		
         	}		      	
         });
-        btnFlashRecovery.setBounds(790, 275, 146, 30);
+        btnFlashRecovery.setBounds(790, 255, 146, 30);
         contentPane.add(btnFlashRecovery);
         
         JLabel lblFlashing = new JLabel("Flashing");
         lblFlashing.setFont(new Font("Lucida Grande", Font.ITALIC, 13));
-        lblFlashing.setBounds(834, 247, 61, 16);
+        lblFlashing.setBounds(834, 235, 61, 16);
         contentPane.add(lblFlashing);
         
         JLabel label = new JLabel("");
@@ -758,30 +767,77 @@ public class Apkinstaller extends JFrame {
         		
         		String input=JOptionPane.showInputDialog("Enter the IP Address of Phone ?");
         		
-        		ProcessBuilder pb=new ProcessBuilder("adb","connect",input);
-        		Process p;
-				try {
-					p =pb.start();
-					InputStream s = p.getInputStream();
-					
-					BufferedReader in = new BufferedReader(new InputStreamReader(s));
-					
-					String temp;
 
-	        		while ((temp = in.readLine()) != null) {
-	        			
-	        		    System.out.println(temp);
-	        		    textCommandStatus.append(temp+"\n");   
-	        		}
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+                // We're going to do something that takes a long time, so we
+                // spin off a thread and update the display when we're done.
+                Thread work = new Thread() {
+                  public void run() {
+                    // Something that takes a long time . . . in real life,
+                    // this
+                    // might be a DB query, remote method invocation, etc.
+                    try {  					
+
+        					try {
+        						
+        						ProcessBuilder pb = new ProcessBuilder("adb", "connect",input);
+        						Process pc = null;
+        						
+        						pc = pb.start();
+        						
+        						
+        						InputStream sp = pc.getInputStream();
+        						
+        						BufferedReader br = new BufferedReader(new InputStreamReader(sp));
+
+        						String temp;
+        						
+
+        						//While 
+        		        		while ((temp = br.readLine()) != null) {
+        		        			
+        		        			System.out.println("\n Reach");
+        		        		    System.out.println(temp);
+        		        		    textCommandStatus.append(temp+"\n");;
+        		        		    pc.waitFor();
+
+        					        System.out.println("Done");   				        
+        					     }
+        		        		
+        		        		//While end
+        					   }catch (IOException | InterruptedException e) {
+        						// TODO Auto-generated catch block
+        						e.printStackTrace();
+        					}
+        					
+        					
+                      Thread.sleep(0);
+                    } catch (InterruptedException ex) {
+                    }
+                    
+                    
+                       
+                    // Report the result using invokeLater().
+                    SwingUtilities.invokeLater(new Runnable() {
+                      public void run() {
+                       textCommandStatus.repaint();
+               
+                      }
+                    });
+                  }
+                };
+
+              work.start(); // So we don't hold up the dispatch thread.
+        		
+        		
+        		
+        		
+        		
+        		
+        		btnUSB.setForeground(Color.BLACK);
+        		btnWireless.setForeground(Color.RED);
 				
 				lblStatus.setText("Wireless");
 				
-				
-        		
         		
         	}
         });
@@ -789,7 +845,7 @@ public class Apkinstaller extends JFrame {
         btnWireless.setBounds(790, 133, 146, 30);
         contentPane.add(btnWireless);
         
-        JButton btnUSB = new JButton("USB");
+        btnUSB = new JButton("USB");
         btnUSB.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		ProcessBuilder pb=new ProcessBuilder("adb","usb");
@@ -813,7 +869,8 @@ public class Apkinstaller extends JFrame {
 				}
 				
 				lblStatus.setText("USB");
-				
+				btnUSB.setForeground(Color.RED);
+				btnWireless.setForeground(Color.BLACK);
 				
         	}
         });
@@ -847,7 +904,6 @@ public class Apkinstaller extends JFrame {
 				JOptionPane.showMessageDialog(null,"Server Killed");
         	}
         });
-        btnkill.setForeground(Color.RED);
         btnkill.setFont(new Font("Lucida Grande", Font.ITALIC, 13));
         btnkill.setBounds(790, 194, 146, 29);
         contentPane.add(btnkill);
@@ -856,6 +912,15 @@ public class Apkinstaller extends JFrame {
         lblStatus.setFont(new Font("Lucida Grande", Font.BOLD | Font.ITALIC, 13));
         lblStatus.setBounds(554, 7, 61, 16);
         contentPane.add(lblStatus);
+        
+        JButton btnClear = new JButton("Clear Status");
+        btnClear.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		textCommandStatus.setText("");
+        	}
+        });
+        btnClear.setBounds(790, 339, 146, 29);
+        contentPane.add(btnClear);
 
 	}
 }
