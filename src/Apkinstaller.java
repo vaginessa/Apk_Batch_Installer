@@ -173,6 +173,8 @@ public class Apkinstaller extends JFrame {
         						pc = pb.start();
         						
         						
+        						
+        						
         						InputStream s = pc.getInputStream();
         						
         						BufferedReader in = new BufferedReader(new InputStreamReader(s));
@@ -195,6 +197,9 @@ public class Apkinstaller extends JFrame {
         					        				        
         					     }
         		        		//While end
+        		        		
+        		        		pc.destroy();//Destroy Process
+        		        		
         					   }catch (IOException | InterruptedException e) {
         						// TODO Auto-generated catch block
         						e.printStackTrace();
@@ -293,6 +298,7 @@ public class Apkinstaller extends JFrame {
 	        		    System.out.println(temp);
 	        		    textCommandStatus.append("\n"+temp+"\n");   
 	        		}
+	        		p.destroy();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -321,6 +327,7 @@ public class Apkinstaller extends JFrame {
 	        		    temp=temp.toUpperCase();
 	        		    textCommandStatus.append(temp+"\n");   
 	        		}
+	        		o.destroy();//Destroy Process
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -596,7 +603,7 @@ public class Apkinstaller extends JFrame {
         						
         						pc = pb.start();
         						
-        						textCommandStatus.append(string);
+        						textCommandStatus.append("\n"+string);
         						
         						
         						InputStream sp = pc.getInputStream();
@@ -618,6 +625,8 @@ public class Apkinstaller extends JFrame {
         					        
         					        				        
         					     }
+        		        		
+        		        		pc.destroy();//Destroy Process
         		        		
         		        		//While end
         					   }catch (IOException | InterruptedException e) {
@@ -706,6 +715,8 @@ public class Apkinstaller extends JFrame {
         	        	        		    System.out.println(temp);
         	        	        		    textCommandStatus.append(temp+"\n");   
         	        	        		}
+        	        	        		
+        	        	        		p.destroy();//Destroy Process
         	        				} catch (IOException e) {
         	        					// TODO Auto-generated catch block
         	        					e.printStackTrace();
@@ -803,6 +814,7 @@ public class Apkinstaller extends JFrame {
         					        System.out.println("Done");   				        
         					     }
         		        		
+        		        		pc.destroy();//Destroy Process
         		        		//While end
         					   }catch (IOException | InterruptedException e) {
         						// TODO Auto-generated catch block
@@ -863,6 +875,7 @@ public class Apkinstaller extends JFrame {
 	        		    System.out.println(temp);
 	        		    textCommandStatus.append(temp+"\n");   
 	        		}
+	        		p.destroy();//Destroy Process
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -896,6 +909,7 @@ public class Apkinstaller extends JFrame {
 	        		    System.out.println(temp);
 	        		    textCommandStatus.append(temp+"\n");   
 	        		}
+	        		p.destroy();
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
